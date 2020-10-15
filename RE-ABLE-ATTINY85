@@ -1,0 +1,107 @@
+unsigned long previousTime = 0;
+byte seconds ;
+byte minutes ;
+byte hours;
+int val;
+int hrs;
+int pulse_pin = 3;
+int reset_pin = 2;
+int buzzer_pin =6;
+int start;
+int flag = 0;
+bool pulse_pin_val;
+byte alarm_time;
+byte alarm_start_time;
+byte current_time;
+void setup()
+{
+  
+  pinMode(pulse_pin, INPUT);
+  pinMode(reset_pin, INPUT);
+}
+void loop()
+{
+  pulse_pin_val=digitalRead(pulse_pin);    
+if (pulse_pin_val == LOW)
+{  
+start = millis(); // take the start time
+ // do the following loop for 60000ms = 1min
+ while ((millis()-start) < 60000)
+ {
+  pulse_pin_val=digitalRead(pulse_pin);
+  if  (pulse_pin_val == LOW) 
+   {
+    flag++;
+       delay(500);
+       pulse_pin_val=digitalRead(pulse_pin);
+       
+     
+   }
+    // check for overflow of millis()
+    if (start > millis())
+    {
+      start = millis();
+      
+    }
+   
+   }
+   } 
+// I  think using microseconds is even more accurate
+if (flag>0)
+{
+while (millis()>=(previousTime))
+{
+previousTime = previousTime + 1000;  // use 100000 for uS
+seconds = seconds +1;
+
+
+
+if (seconds==60)
+{
+seconds = 0;
+minutes = minutes +1;
+
+}
+if (minutes == flag+1)
+{
+//hours = hours +1;
+minutes=0;
+digitalWrite(buzzer_pin,HIGH);
+delay(200);
+digitalWrite(buzzer_pin,HIGH);
+
+
+
+}
+//if (hours == hrs)
+//{
+//hours = 0;
+//}
+//end 1 second
+//} // end loop
+break;
+}
+}
+}
+/*
+if (flag>0){
+  alarm_time = 3600000*flag;
+  alarm_start_time = millis();
+  current_time = 0 ;
+  while(alarm_time>=current_time){
+     delay(5000); //to reduce burden on the processor
+     current_time=alarm_start_time - millis();
+  }
+//buzzer=HIGH;
+
+Serial.println("alarm set for ");
+Serial.println(flag);
+
+}
+}
+/*
+
+ */
+
+
+ 
